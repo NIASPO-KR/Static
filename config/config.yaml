@@ -1,0 +1,12 @@
+server:
+  addr: "localhost"
+  port: "8081"
+
+  static_data:
+    db:
+      driver: "postgres"
+      addr: "localhost"
+      port: "5441"
+      db: "static"
+      user_env_key: "DB_USER"
+      password_env_key: "DB_PASSWORD"
