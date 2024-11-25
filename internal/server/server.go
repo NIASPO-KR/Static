@@ -6,6 +6,9 @@ import (
 	"net/http"
 	"time"
 
+	staticRepository "static/internal/repository/static"
+	staticService "static/internal/usecase/static"
+
 	"github.com/go-chi/chi/v5"
 
 	"static/config"
@@ -18,6 +21,16 @@ type Server struct {
 	cfg *config.Config
 
 	staticDB *postgres.Postgres
+
+	// repositories
+	itemsRepository        staticRepository.ItemsRepository
+	pickupPointsRepository staticRepository.PickupPointsRepository
+	paymentsRepository     staticRepository.PaymentsRepository
+
+	// services
+	itemsUseCase        staticService.ItemsUseCase
+	pickupPointsUseCase staticService.PickupPointsUseCase
+	paymentsUseCase     staticService.PaymentsUseCase
 
 	router *chi.Mux
 	server *http.Server
@@ -43,6 +56,8 @@ func (s *Server) init() error {
 		return fmt.Errorf("migrate static db: %v", err)
 	}
 
+	s.initRepositories()
+	s.initUseCases()
 	s.initRouter()
 	s.initHTTPServer()
 
@@ -60,6 +75,18 @@ func (s *Server) initDB() error {
 	return nil
 }
 
+func (s *Server) initRepositories() {
+	s.itemsRepository = staticRepository.NewItemsRepository(s.staticDB)
+	s.pickupPointsRepository = staticRepository.NewPickupPointsRepository(s.staticDB)
+	s.paymentsRepository = staticRepository.NewPaymentsRepository(s.staticDB)
+}
+
+func (s *Server) initUseCases() {
+	s.itemsUseCase = staticService.NewItemsUseCase(s.itemsRepository)
+	s.pickupPointsUseCase = staticService.NewPickupPointUseCase(s.pickupPointsRepository)
+	s.paymentsUseCase = staticService.NewPaymentsUseCase(s.paymentsRepository)
+}
+
 func (s *Server) initHTTPServer() {
 	s.server = &http.Server{
 		Addr:         fmt.Sprintf("%s:%s", s.cfg.Server.Addr, s.cfg.Server.Port),
@@ -70,6 +97,8 @@ func (s *Server) initHTTPServer() {
 }
 
 func (s *Server) Run() {
+	log.Println("Server started")
+
 	if err := s.server.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}
