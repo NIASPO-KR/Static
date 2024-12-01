@@ -5,16 +5,13 @@ import (
 	"fmt"
 
 	"static/internal/infrastructure/database/postgres"
-	"static/internal/models/domain"
+	"static/internal/models/entities"
+	"static/internal/ports/repository"
 )
 
 const (
 	itemsDB = "items"
 )
-
-type ItemsRepository interface {
-	GetItems(ctx context.Context) ([]domain.Item, error)
-}
 
 type itemsRepository struct {
 	db *postgres.Postgres
@@ -22,13 +19,13 @@ type itemsRepository struct {
 
 func NewItemsRepository(
 	db *postgres.Postgres,
-) ItemsRepository {
+) repository.ItemsRepository {
 	return &itemsRepository{
 		db: db,
 	}
 }
 
-func (i *itemsRepository) GetItems(ctx context.Context) ([]domain.Item, error) {
+func (i *itemsRepository) GetItems(ctx context.Context) ([]entities.Item, error) {
 	qb := i.db.Builder.Select(
 		"id",
 		"name",
@@ -46,9 +43,9 @@ func (i *itemsRepository) GetItems(ctx context.Context) ([]domain.Item, error) {
 	}
 	defer rows.Close()
 
-	var items []domain.Item
+	var items []entities.Item
 	for rows.Next() {
-		var item domain.Item
+		var item entities.Item
 		if err := rows.Scan(&item.ID, &item.Name, &item.Price); err != nil {
 			return nil, fmt.Errorf("row scan %w", err)
 		}

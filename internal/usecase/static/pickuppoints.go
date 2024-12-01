@@ -6,7 +6,7 @@ import (
 
 	"static/internal/converters"
 	"static/internal/models/dto"
-	"static/internal/repository/static"
+	"static/internal/ports/repository"
 )
 
 type PickupPointsUseCase interface {
@@ -14,12 +14,12 @@ type PickupPointsUseCase interface {
 }
 
 type pickupPointUseCase struct {
-	pickupPointsRepository static.PickupPointsRepository
+	pickupPointsRepository repository.PickupPointsRepository
 	pickupPointsConverter  *converters.PickupPointsConverter
 }
 
 func NewPickupPointUseCase(
-	pickupPointsRepository static.PickupPointsRepository,
+	pickupPointsRepository repository.PickupPointsRepository,
 ) PickupPointsUseCase {
 	return &pickupPointUseCase{
 		pickupPointsRepository: pickupPointsRepository,

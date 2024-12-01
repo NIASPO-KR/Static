@@ -6,7 +6,7 @@ import (
 
 	"static/internal/converters"
 	"static/internal/models/dto"
-	"static/internal/repository/static"
+	"static/internal/ports/repository"
 )
 
 type ItemsUseCase interface {
@@ -14,12 +14,12 @@ type ItemsUseCase interface {
 }
 
 type itemsUseCase struct {
-	itemsRepository static.ItemsRepository
+	itemsRepository repository.ItemsRepository
 	itemsConverter  *converters.ItemsConverter
 }
 
 func NewItemsUseCase(
-	itemsRepository static.ItemsRepository,
+	itemsRepository repository.ItemsRepository,
 ) ItemsUseCase {
 	return &itemsUseCase{
 		itemsRepository: itemsRepository,

@@ -5,16 +5,13 @@ import (
 	"fmt"
 
 	"static/internal/infrastructure/database/postgres"
-	"static/internal/models/domain"
+	"static/internal/models/entities"
+	"static/internal/ports/repository"
 )
 
 const (
 	pickupPointsDB = "pickup_points"
 )
-
-type PickupPointsRepository interface {
-	GetPickupPoints(ctx context.Context) ([]domain.PickupPoint, error)
-}
 
 type pickupPointsRepository struct {
 	db *postgres.Postgres
@@ -22,13 +19,13 @@ type pickupPointsRepository struct {
 
 func NewPickupPointsRepository(
 	db *postgres.Postgres,
-) PickupPointsRepository {
+) repository.PickupPointsRepository {
 	return &pickupPointsRepository{
 		db: db,
 	}
 }
 
-func (pp *pickupPointsRepository) GetPickupPoints(ctx context.Context) ([]domain.PickupPoint, error) {
+func (pp *pickupPointsRepository) GetPickupPoints(ctx context.Context) ([]entities.PickupPoint, error) {
 	qb := pp.db.Builder.Select(
 		"id",
 		"address",
@@ -45,9 +42,9 @@ func (pp *pickupPointsRepository) GetPickupPoints(ctx context.Context) ([]domain
 	}
 	defer rows.Close()
 
-	var pickupPoints []domain.PickupPoint
+	var pickupPoints []entities.PickupPoint
 	for rows.Next() {
-		var pickupPoint domain.PickupPoint
+		var pickupPoint entities.PickupPoint
 		if err := rows.Scan(&pickupPoint.ID, &pickupPoint.Address); err != nil {
 			return nil, fmt.Errorf("row scan %w", err)
 		}

@@ -6,15 +6,15 @@ import (
 	"net/http"
 	"time"
 
-	staticRepository "static/internal/repository/static"
-	staticService "static/internal/usecase/static"
-
 	"github.com/go-chi/chi/v5"
 
 	"static/config"
 	postgresAdapter "static/internal/adapter/postgres"
+	"static/internal/adapter/repository/static"
 	"static/internal/infrastructure/database"
 	"static/internal/infrastructure/database/postgres"
+	"static/internal/ports/repository"
+	staticService "static/internal/usecase/static"
 )
 
 type Server struct {
@@ -23,9 +23,9 @@ type Server struct {
 	staticDB *postgres.Postgres
 
 	// repositories
-	itemsRepository        staticRepository.ItemsRepository
-	pickupPointsRepository staticRepository.PickupPointsRepository
-	paymentsRepository     staticRepository.PaymentsRepository
+	itemsRepository        repository.ItemsRepository
+	pickupPointsRepository repository.PickupPointsRepository
+	paymentsRepository     repository.PaymentsRepository
 
 	// services
 	itemsUseCase        staticService.ItemsUseCase
@@ -76,9 +76,9 @@ func (s *Server) initDB() error {
 }
 
 func (s *Server) initRepositories() {
-	s.itemsRepository = staticRepository.NewItemsRepository(s.staticDB)
-	s.pickupPointsRepository = staticRepository.NewPickupPointsRepository(s.staticDB)
-	s.paymentsRepository = staticRepository.NewPaymentsRepository(s.staticDB)
+	s.itemsRepository = static.NewItemsRepository(s.staticDB)
+	s.pickupPointsRepository = static.NewPickupPointsRepository(s.staticDB)
+	s.paymentsRepository = static.NewPaymentsRepository(s.staticDB)
 }
 
 func (s *Server) initUseCases() {

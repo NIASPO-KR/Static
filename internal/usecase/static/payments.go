@@ -6,7 +6,7 @@ import (
 
 	"static/internal/converters"
 	"static/internal/models/dto"
-	"static/internal/repository/static"
+	"static/internal/ports/repository"
 )
 
 type PaymentsUseCase interface {
@@ -14,12 +14,12 @@ type PaymentsUseCase interface {
 }
 
 type paymentsUseCase struct {
-	paymentsRepository static.PaymentsRepository
+	paymentsRepository repository.PaymentsRepository
 	paymentsConverter  *converters.PaymentsConverter
 }
 
 func NewPaymentsUseCase(
-	paymentsRepository static.PaymentsRepository,
+	paymentsRepository repository.PaymentsRepository,
 ) PaymentsUseCase {
 	return &paymentsUseCase{
 		paymentsRepository: paymentsRepository,

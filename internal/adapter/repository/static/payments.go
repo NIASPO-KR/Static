@@ -5,16 +5,13 @@ import (
 	"fmt"
 
 	"static/internal/infrastructure/database/postgres"
-	"static/internal/models/domain"
+	"static/internal/models/entities"
+	"static/internal/ports/repository"
 )
 
 const (
 	paymentsDB = "payments"
 )
-
-type PaymentsRepository interface {
-	GetPayments(ctx context.Context) ([]domain.Payment, error)
-}
 
 type paymentsRepository struct {
 	db *postgres.Postgres
@@ -22,13 +19,13 @@ type paymentsRepository struct {
 
 func NewPaymentsRepository(
 	db *postgres.Postgres,
-) PaymentsRepository {
+) repository.PaymentsRepository {
 	return &paymentsRepository{
 		db: db,
 	}
 }
 
-func (p *paymentsRepository) GetPayments(ctx context.Context) ([]domain.Payment, error) {
+func (p *paymentsRepository) GetPayments(ctx context.Context) ([]entities.Payment, error) {
 	qb := p.db.Builder.Select(
 		"id",
 		"name",
@@ -45,9 +42,9 @@ func (p *paymentsRepository) GetPayments(ctx context.Context) ([]domain.Payment,
 	}
 	defer rows.Close()
 
-	var payments []domain.Payment
+	var payments []entities.Payment
 	for rows.Next() {
-		var payment domain.Payment
+		var payment entities.Payment
 		if err := rows.Scan(&payment.ID, &payment.Name); err != nil {
 			return nil, fmt.Errorf("row scan %w", err)
 		}
