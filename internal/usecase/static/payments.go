@@ -7,11 +7,8 @@ import (
 	"static/internal/converters"
 	"static/internal/models/dto"
 	"static/internal/ports/repository"
+	"static/internal/usecase"
 )
-
-type PaymentsUseCase interface {
-	GetPayments(ctx context.Context) ([]dto.Payment, error)
-}
 
 type paymentsUseCase struct {
 	paymentsRepository repository.PaymentsRepository
@@ -20,7 +17,7 @@ type paymentsUseCase struct {
 
 func NewPaymentsUseCase(
 	paymentsRepository repository.PaymentsRepository,
-) PaymentsUseCase {
+) usecase.PaymentsUseCase {
 	return &paymentsUseCase{
 		paymentsRepository: paymentsRepository,
 		paymentsConverter:  converters.NewPaymentsConverter(),

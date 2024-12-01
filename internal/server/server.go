@@ -14,6 +14,7 @@ import (
 	"static/internal/infrastructure/database"
 	"static/internal/infrastructure/database/postgres"
 	"static/internal/ports/repository"
+	"static/internal/usecase"
 	staticService "static/internal/usecase/static"
 )
 
@@ -28,9 +29,9 @@ type Server struct {
 	paymentsRepository     repository.PaymentsRepository
 
 	// services
-	itemsUseCase        staticService.ItemsUseCase
-	pickupPointsUseCase staticService.PickupPointsUseCase
-	paymentsUseCase     staticService.PaymentsUseCase
+	itemsUseCase        usecase.ItemsUseCase
+	pickupPointsUseCase usecase.PickupPointsUseCase
+	paymentsUseCase     usecase.PaymentsUseCase
 
 	router *chi.Mux
 	server *http.Server

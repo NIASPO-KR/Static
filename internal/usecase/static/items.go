@@ -7,11 +7,8 @@ import (
 	"static/internal/converters"
 	"static/internal/models/dto"
 	"static/internal/ports/repository"
+	"static/internal/usecase"
 )
-
-type ItemsUseCase interface {
-	GetItems(ctx context.Context) ([]dto.Item, error)
-}
 
 type itemsUseCase struct {
 	itemsRepository repository.ItemsRepository
@@ -20,7 +17,7 @@ type itemsUseCase struct {
 
 func NewItemsUseCase(
 	itemsRepository repository.ItemsRepository,
-) ItemsUseCase {
+) usecase.ItemsUseCase {
 	return &itemsUseCase{
 		itemsRepository: itemsRepository,
 		itemsConverter:  converters.NewItemsConverter(),
